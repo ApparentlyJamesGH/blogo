@@ -1,15 +1,3 @@
+blog.yml
 node_modules
-*.override.yml
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-go.work
-.env
-articles
-TODO.md
-style.css
-content
+/articles

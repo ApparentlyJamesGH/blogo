@@ -1,0 +1,55 @@
+package templates
+
+import (
+    "github.com/pluja/blogo/internal/models"
+    "fmt"
+    "strings"
+	"github.com/spf13/viper"
+	"github.com/pluja/blogo/internal/utils"
+)
+
+func extraHeaders(article models.Article) string {
+    canonical := fmt.Sprintf("https://%s/p/%s", viper.GetString("baseURL"), article.Slug)
+    extra := `<link rel="stylesheet" type="text/css" href="/static/css/markdown.css">
+                <meta property="og:type" content="article" />
+                <meta name="description" content="%s">
+                <meta property="og:description" content="%s" />
+                <meta name="keywords" content="%s">
+                <meta property="og:title" content="%s" />
+                <meta property="og:url" content="%s" />
+                <link rel="canonical" href="%s" />`
+
+    extra = fmt.Sprintf(extra, 
+        article.Summary, 
+        article.Summary, 
+        strings.Join(article.Tags, ", "), 
+        article.Title, 
+        canonical,
+        canonical)
+
+    if article.Draft {
+        extra += "\n<meta name=\"robots\" content=\"noindex\">"
+    }
+
+    return extra
+}
+
+templ Article(article models.Article) {
+	@Layout(extraHeaders(article)) {
+        <h1 class="pt-2 mb-2 text-3xl font-bold text-gray-900 text-opacity-90 capitalize dark:text-gray-300">{ article.Title }</h1>
+        
+        <div class="mb-0 text-xs font-medium text-black/80 dark:text-white/80">
+            <span class="drop-shadow-sm">~{ fmt.Sprintf("%d", utils.ReadTime(article.Md)) } min read</span>
+            if article.Author != "" {
+                <span class="drop-shadow-sm">by { article.Author }, { article.Date.Format("2006-01-02") }</span>
+            } else {
+                <span>{ article.Date.Format("2006-01-02") }</span>
+
+            }
+        </div>
+
+        <div id="markdown" class="pb-12 font-garamond prose prose-blue prose-code:text-base prose-hr:border-zinc-600 prose-hr:dark:border-zinc-400 prose-blockquote:border-blue-600 prose-blockquote:dark:border-blue-900 dark:prose-invert font-garamond">
+            @templ.Raw(article.Html)
+        </div>
+    }
+}
