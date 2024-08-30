@@ -19,7 +19,7 @@ import (
 	"github.com/pluja/blogo/internal/utils"
 )
 
-func GetFromFile(slug string) (models.Article, error) {
+func GetFromFile(slug string, parseContent bool) (models.Article, error) {
 	articlesPath := viper.GetString("articlesPath")
 	path := filepath.Join(articlesPath, slug+".md")
 
@@ -102,13 +102,15 @@ func GetFromFile(slug string) (models.Article, error) {
 		}
 	}
 
-	html, md, err := GetArticleContent(path)
-	if err != nil {
-		return models.Article{}, err
-	}
+	if parseContent {
+		html, md, err := GetArticleContent(path)
+		if err != nil {
+			return models.Article{}, err
+		}
 
-	article.Html = html
-	article.Md = md
+		article.Html = html
+		article.Md = md
+	}
 
 	article.Slug = slug
 

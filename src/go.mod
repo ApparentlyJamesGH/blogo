@@ -5,7 +5,7 @@ go 1.22.5
 require (
 	github.com/a-h/templ v0.2.771
 	github.com/alecthomas/chroma/v2 v2.14.0
-	github.com/fsnotify/fsnotify v1.7.0
+	github.com/dgraph-io/ristretto v0.0.3-0.20200630154024-f66de99634de
 	github.com/joho/godotenv v1.5.1
 	github.com/kataras/iris/v12 v12.2.11
 	github.com/rs/zerolog v1.33.0
@@ -23,9 +23,11 @@ require (
 	github.com/Shopify/goreferrer v0.0.0-20220729165902-8cddb4f5de06 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
+	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
+	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20240328165702-4d01890c35c0 // indirect
 	github.com/google/uuid v1.6.0 // indirect

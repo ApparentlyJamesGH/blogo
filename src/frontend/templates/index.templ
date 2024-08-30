@@ -1,33 +1,25 @@
 package templates
 
+import "github.com/pluja/blogo/internal/articles"
+import "github.com/spf13/viper"
+
 
 templ Index() {
 	@Layout("") {
-		<div class="max-w-2xl">
-			<div>
-				<h2 class="font-bold text-xl mb-4">Latest</h2>
+		if viper.GetString("description") != "" {
+			<p class="max-w-2xl pt-0 mb-8"> { viper.GetString("description") } </p>
+		}
+		<div>
+			<h2 class="w-full mb-4 text-xl font-bold">Latest</h2>
 
-				<ul class="space-y-2 hover:[&>a]:underline">
+			<ul class="space-y-2 hover:[&>li>a]:underline w-full">
+				for _, article := range articles.ArticleList {
 					<li>
-						<div>
-							<span class="text-black/60 dark:text-white/60 mr-6">19 Jul, 2024</span>
-							<a href="/p/future">Future Visions Possibilities</a>
-						</div>
+						<span class="text-black/60 dark:text-white/60">{ article.Date.Format("02 Jan, 2006") }</span>
+						<a class="ml-4 capitalize" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
 					</li>
-					<li>
-						<div>
-							<span class="text-black/60 dark:text-white/60 mr-6">09 Jul, 2024</span>
-							<a href="#">The Great Freedom of Being Free</a>
-						</div>
-					</li>
-					<li>
-						<div>
-							<span class="text-black/60 dark:text-white/60 mr-6">06 Mar, 2024</span>
-							<a href="#">My Awesome Post</a>
-						</div>
-					</li>
-				</ul>
-			</div>
+				}
+			</ul>
 		</div>
 	}
 }

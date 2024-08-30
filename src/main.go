@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/pluja/blogo/internal/articles"
+	"github.com/pluja/blogo/internal/cache"
 	"github.com/pluja/blogo/internal/server"
 )
 
@@ -22,9 +23,11 @@ func init() {
 	initLogger()
 	loadConfig()
 	articles.InitGoldmark()
+	cache.InitCache()
 }
 
 func main() {
+	go articles.WatchArticles()
 	if err := server.StartServer(); err != nil {
 		log.Fatal().Err(err)
 	}
