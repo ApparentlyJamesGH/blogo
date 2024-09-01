@@ -5,21 +5,24 @@ import "github.com/spf13/viper"
 
 
 templ Index() {
-	@Layout("") {
+	@Layout("", "") {
 		if viper.GetString("description") != "" {
 			<p class="max-w-2xl pt-0 mb-8"> { viper.GetString("description") } </p>
 		}
 		<div>
 			<h2 class="w-full mb-4 text-xl font-bold">Latest</h2>
-
-			<ul class="space-y-2 hover:[&>li>a]:underline w-full">
-				for _, article := range articles.ArticleList {
-					<li>
-						<span class="text-black/60 dark:text-white/60">{ article.Date.Format("02 Jan, 2006") }</span>
-						<a class="ml-4 capitalize" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
+			<ul class="space-y-3 md:space-y-2 hover:[&>li>a]:underline w-full mb-4">
+				for _, article := range articles.ArticleList[:min(len(articles.ArticleList), 10)] {
+					<li class="flex flex-col pb-2 border-b border-b-blogo-text-fade sm:flex-row sm:items-start">
+						<span class="text-xs text-blogo-text opacity-60 sm:text-base">{ article.Date.Format("02 Jan, 2006") }</span>
+						<a class="ml-0 capitalize text-primary sm:ml-4" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
 					</li>
 				}
 			</ul>
+
+			if len(articles.ArticleList) > 10 {
+				<a class="underline text-blogo-text opacity-60 hover:text-primary" href="/blog">Older posts</a>
+			}
 		</div>
 	}
 }

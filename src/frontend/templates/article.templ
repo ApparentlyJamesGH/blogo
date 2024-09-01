@@ -9,7 +9,7 @@ import (
 )
 
 func extraHeaders(article models.Article) string {
-    canonical := fmt.Sprintf("https://%s/p/%s", viper.GetString("baseURL"), article.Slug)
+    canonical := fmt.Sprintf("https://%s/p/%s", viper.GetString("base_url"), article.Slug)
     extra := `<link rel="stylesheet" type="text/css" href="/static/css/markdown.css">
                 <meta property="og:type" content="article" />
                 <meta name="description" content="%s">
@@ -35,21 +35,26 @@ func extraHeaders(article models.Article) string {
 }
 
 templ Article(article models.Article) {
-	@Layout(extraHeaders(article)) {
-        <h1 class="pt-2 mb-2 text-3xl font-bold text-gray-900 text-opacity-90 capitalize dark:text-gray-300">{ article.Title }</h1>
+	@Layout(extraHeaders(article), article.Title) {
+        <h1 class="pt-2 mb-2 text-2xl font-bold text-gray-900 capitalize md:text-3xl text-opacity-90 dark:text-gray-300">{ article.Title }</h1>
         
-        <div class="mb-0 text-xs font-medium text-black/80 dark:text-white/80">
+        <div class="text-xs font-medium text-blogo-text-fade">
             <span class="drop-shadow-sm">~{ fmt.Sprintf("%d", utils.ReadTime(article.Md)) } min read</span>
             if article.Author != "" {
-                <span class="drop-shadow-sm">by { article.Author }, { article.Date.Format("2006-01-02") }</span>
+                <span class="drop-shadow-sm">by { article.Author } | { article.Date.Format("2 Jan, 2006") }</span>
             } else {
-                <span>{ article.Date.Format("2006-01-02") }</span>
-
+                <span>{ article.Date.Format("02 Jan 2006") }</span>
             }
         </div>
 
-        <div id="markdown" class="pb-12 font-garamond prose prose-blue prose-code:text-base prose-hr:border-zinc-600 prose-hr:dark:border-zinc-400 prose-blockquote:border-blue-600 prose-blockquote:dark:border-blue-900 dark:prose-invert font-garamond">
+        <div class="space-x-2 text-xs hover:[&>a]:text-secondary mb-8 mt-1 text-blogo-text-fade">
+			for _, tag := range article.Tags {
+				<a href={templ.SafeURL("/tag/" + tag)}>#{ tag }</a>
+			}
+		</div>
+
+        <article id="markdown" class="pb-12 font-sans prose-lg prose-img:w-full prose-a:break-all sm:prose-xl prose-a:text-secondary prose-headings:text-blogo-title prose-strong:text-secondary-emphasis prose-zinc prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-p:text-blogo-text prose-blockquote:border-secondary prose-blockquote:text-blogo-text">
             @templ.Raw(article.Html)
-        </div>
+        </article>
     }
 }

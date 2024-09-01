@@ -52,11 +52,24 @@ func initFlags() {
 func loadConfig() {
 	viper.SetConfigName("blogo")
 	viper.SetConfigType("yaml")
+
+	// Config paths
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/blogo/")
 	viper.AddConfigPath("$HOME/.blogo")
+
+	// Env variables
 	viper.SetEnvPrefix("BLOGO")
 	viper.AutomaticEnv()
+
+	// Defaults
+	viper.SetDefault("powered_by_footer", true)
+	viper.SetDefault("title", "Blogo")
+	viper.SetDefault("description", "Welcome to my blogo")
+	viper.SetDefault("timezone", "UTC")
+	viper.SetDefault("theme", "blogo")
+	viper.SetDefault("nostr.publish", false)
+	viper.SetDefault("articles_path", "/blogo/articles")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {

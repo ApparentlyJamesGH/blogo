@@ -20,8 +20,8 @@ import (
 )
 
 func GetFromFile(slug string, parseContent bool) (models.Article, error) {
-	articlesPath := viper.GetString("articlesPath")
-	path := filepath.Join(articlesPath, slug+".md")
+	articles_path := viper.GetString("articles_path")
+	path := filepath.Join(articles_path, slug+".md")
 
 	var article models.Article
 
@@ -77,7 +77,7 @@ func GetFromFile(slug string, parseContent bool) (models.Article, error) {
 	// Parse header image
 	image := utils.GetMapStringValue(metadata, "Image")
 	if image != "" && strings.HasPrefix(image, "/") {
-		image = fmt.Sprintf("%v%v", viper.GetString("baseURL"), image)
+		image = fmt.Sprintf("%v%v", viper.GetString("base_url"), image)
 	}
 
 	// Fill article Data

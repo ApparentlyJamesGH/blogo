@@ -27,6 +27,10 @@ func StartServer() error {
 
 	// UI Handlers
 	r.Get("/", iris.Component(templates.Index()))
+	r.Get("/blog", iris.Component(templates.Blog()))
+	r.Get("/rss", handlers.HandleFeed)
+	r.Get("/atom", handlers.HandleFeed)
+	r.Get("/json", handlers.HandleFeed)
 	r.Get("/p/{slug}", handlers.HandleArticle)
 	r.Get("/p/{slug}/raw", handlers.HandleRawArticle)
 
