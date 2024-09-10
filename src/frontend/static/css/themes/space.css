@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #0b0d17;
+    /* Deep Space Blue */
+    --blogo-primary: #1f51ff;
+    /* Vivid Blue */
+    --blogo-primary-emphasis: #00bfff;
+    /* Deep Sky Blue */
+    --blogo-primary-dark: #000080;
+    /* Navy Blue */
+    --blogo-primary-light: #87ceeb;
+    /* Sky Blue */
+    --blogo-text: #dcdcdc;
+    /* Light Gray */
+    --blogo-text-select: #1f51ff;
+    /* Vivid Blue */
+    --blogo-text-fade: #6a5acd;
+    /* Slate Blue */
+}

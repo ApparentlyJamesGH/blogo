@@ -12,6 +12,7 @@ import (
 
 	"github.com/pluja/blogo/internal/articles"
 	"github.com/pluja/blogo/internal/cache"
+	"github.com/pluja/blogo/internal/nostr"
 	"github.com/pluja/blogo/internal/server"
 )
 
@@ -23,11 +24,13 @@ func init() {
 	initLogger()
 	loadConfig()
 	articles.InitGoldmark()
-	cache.InitCache()
+	cache.Init()
+	nostr.Init()
 }
 
 func main() {
 	go articles.WatchArticles()
+
 	if err := server.StartServer(); err != nil {
 		log.Fatal().Err(err)
 	}
@@ -69,6 +72,7 @@ func loadConfig() {
 	viper.SetDefault("timezone", "UTC")
 	viper.SetDefault("theme", "blogo")
 	viper.SetDefault("nostr.publish", false)
+	viper.SetDefault("nostr.relays", []string{"wss://nostr-pub.wellorder.net", "wss://relay.damus.io", "wss://relay.nostr.band"})
 	viper.SetDefault("articles_path", "/blogo/articles")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -78,6 +82,8 @@ func loadConfig() {
 			panic(fmt.Errorf("fatal error config file: %w", err))
 		}
 	}
+
+	viper.WatchConfig()
 
 	log.Printf("%s", viper.GetString("title"))
 }

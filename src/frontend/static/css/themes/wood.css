@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #f5f0e1;
+    /* Light Beige */
+    --blogo-primary: #8b5e3c;
+    /* Wood Brown */
+    --blogo-primary-emphasis: #a77945;
+    /* Tawny */
+    --blogo-primary-dark: #4a2e19;
+    /* Dark Wood Brown */
+    --blogo-primary-light: #d1b18c;
+    /* Light Tan */
+    --blogo-text: #4a2e19;
+    /* Dark Wood Brown */
+    --blogo-text-select: #8b5e3c;
+    /* Wood Brown */
+    --blogo-text-fade: #a77945;
+    /* Tawny */
+}

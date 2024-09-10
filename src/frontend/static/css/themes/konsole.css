@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #111211;
+    /* Dark Stone */
+    --blogo-primary: #5c8d11;
+    /* Terminal Green */
+    --blogo-primary-emphasis: #a3e635;
+    /* Bright Green */
+    --blogo-primary-dark: #2a3619;
+    /* Deep Green */
+    --blogo-primary-light: #759d39;
+    /* Light Green */
+    --blogo-text: #dcdcdc;
+    /* Light Gray */
+    --blogo-text-select: #2a3619;
+    /* Deep Green */
+    --blogo-text-fade: #93d038;
+    /* Light Green */
+}

@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #121212;
+    /* Dark Background */
+    --blogo-primary: #f2a900;
+    /* Bitcoin Gold */
+    --blogo-primary-emphasis: #ffb84d;
+    /* Light Gold */
+    --blogo-primary-dark: #b07f15;
+    /* Dark Gold */
+    --blogo-primary-light: #ffd700;
+    /* Bright Gold */
+    --blogo-text: #f1f1f1;
+    /* Light Text */
+    --blogo-text-select: #b07f15;
+    /* Dark Gold */
+    --blogo-text-fade: #d69620;
+    /* Medium Gold */
+}

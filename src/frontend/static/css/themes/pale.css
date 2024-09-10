@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #1a1a1a;
+    /* Dark Gray */
+    --blogo-primary: #005f73;
+    /* Deep Teal */
+    --blogo-primary-emphasis: #0a9396;
+    /* Turquoise */
+    --blogo-primary-dark: #003d47;
+    /* Dark Teal */
+    --blogo-primary-light: #94d2bd;
+    /* Light Teal */
+    --blogo-text: #e0e0e0;
+    /* Light Gray */
+    --blogo-text-select: #003d47;
+    /* Dark Teal */
+    --blogo-text-fade: #67757c;
+    /* Slate Gray */
+}

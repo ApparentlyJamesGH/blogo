@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #2d2d2f;
+    /* Dark Charcoal */
+    --blogo-primary: #555555;
+    /* Dull Gray */
+    --blogo-primary-emphasis: #7f7f7f;
+    /* Medium Gray */
+    --blogo-primary-dark: #3a3a3c;
+    /* Dark Gray */
+    --blogo-primary-light: #aaaaaa;
+    /* Light Gray */
+    --blogo-text: #e0e0e0;
+    /* Light Silver */
+    --blogo-text-select: #3a3a3c;
+    /* Dark Gray */
+    --blogo-text-fade: #858585;
+    /* Medium Gray */
+}

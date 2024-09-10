@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #f5e9d3;
+    /* Light Sepia */
+    --blogo-primary: #704214;
+    /* Sepia Brown */
+    --blogo-primary-emphasis: #855e42;
+    /* Chestnut */
+    --blogo-primary-dark: #4b2e14;
+    /* Dark Brown */
+    --blogo-primary-light: #b6956b;
+    /* Tan */
+    --blogo-text: #4b2e14;
+    /* Dark Brown */
+    --blogo-text-select: #704214;
+    /* Sepia Brown */
+    --blogo-text-fade: #a67b5b;
+    /* An additional sepia tone */
+}

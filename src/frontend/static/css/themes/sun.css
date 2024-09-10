@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #fff8e7;
+    /* Light Yellow */
+    --blogo-primary: #ffca28;
+    /* Sunflower Yellow */
+    --blogo-primary-emphasis: #ffa000;
+    /* Amber */
+    --blogo-primary-dark: #ffbb00;
+    /* Dark Orange */
+    --blogo-primary-light: #ccbe56;
+    /* Pale Yellow */
+    --blogo-text: #6d4c41;
+    /* Brown */
+    --blogo-text-select: #ffca28;
+    /* Sunflower Yellow */
+    --blogo-text-fade: #ffa726;
+    /* Light Orange */
+}

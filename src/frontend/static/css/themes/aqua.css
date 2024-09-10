@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #e0f7fa;
+    /* Light Cyan */
+    --blogo-primary: #00bcd4;
+    /* Bright Cyan */
+    --blogo-primary-emphasis: #26c6da;
+    /* Light Blue-Cyan */
+    --blogo-primary-dark: #00838f;
+    /* Dark Cyan */
+    --blogo-primary-light: #53c0ce;
+    /* Pale Cyan */
+    --blogo-text: #004d40;
+    /* Deep Teal */
+    --blogo-text-select: #00838f;
+    /* Dark Cyan */
+    --blogo-text-fade: #52aeba;
+    /* Soft Cyan */
+}

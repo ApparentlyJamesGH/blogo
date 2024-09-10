@@ -17,5 +17,6 @@ type Article struct {
 	Layout   string
 	Md       string
 	Html     template.HTML
-	NostrUrl string
+	Nostr    bool
+	ReadTime int
 }

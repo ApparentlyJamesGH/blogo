@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #0d0f12;
+    /* Very Dark Gray */
+    --blogo-primary: #39ff14;
+    /* Neon Green */
+    --blogo-primary-emphasis: #ff073a;
+    /* Neon Red */
+    --blogo-primary-dark: #1a1a2e;
+    /* Dark Indigo */
+    --blogo-primary-light: #0abdc6;
+    /* Neon Cyan */
+    --blogo-text: #e6e6e6;
+    /* Light Gray */
+    --blogo-text-select: #1a1a2e;
+    /* Dark Indigo */
+    --blogo-text-fade: #9333ea;
+    /* Neon Purple */
+}

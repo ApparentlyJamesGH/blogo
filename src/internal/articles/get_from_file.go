@@ -19,118 +19,119 @@ import (
 	"github.com/pluja/blogo/internal/utils"
 )
 
+// GetFromFile retrieves an article from a file and parses its content.
 func GetFromFile(slug string, parseContent bool) (models.Article, error) {
-	articles_path := viper.GetString("articles_path")
-	path := filepath.Join(articles_path, slug+".md")
+	articlesPath := viper.GetString("articles_path")
+	path := filepath.Join(articlesPath, slug+".md")
 
-	var article models.Article
-
-	// Read the markdown file
 	content, err := os.ReadFile(path)
 	if err != nil {
 		log.Error().Err(err).Str("path", path).Msg("Failed to read file")
-		return article, err
+		return models.Article{}, fmt.Errorf("failed to read file: %w", err)
 	}
 
 	var buf strings.Builder
 	pContext := parser.NewContext()
 	if err := markdown.Convert(content, &buf, parser.WithContext(pContext)); err != nil {
-		return article, err
+		return models.Article{}, fmt.Errorf("failed to convert markdown: %w", err)
 	}
 
-	// Get the metadata fields
 	metadata := meta.Get(pContext)
 
-	// Handle drafts
-	draftValue, exists := metadata["Draft"]
-	if !exists {
-		log.Warn().Msgf("%s has no draft value. Defaulting to false", path)
-		draftValue = false
-	}
-	var draft bool
-	switch articleDraft := draftValue.(type) {
-	case bool:
-		draft = articleDraft
-	case string:
-		if isDraft, err := strconv.ParseBool(articleDraft); err == nil && isDraft {
-			draft = true
-		} else if err != nil {
-			log.Warn().Msgf("Could not parse draft value for %v, considering draft", path)
-			draft = true
-		}
-	default:
-		log.Err(err).Msgf("Could not parse draft value for %v, considering draft", path)
-		draft = true
-	}
-
-	// Parse date
-	dateString := utils.GetMapStringValue(metadata, "Date")
-	date, err := time.Parse("2006-01-02 15:04", dateString)
-	if err != nil {
-		date, err = time.Parse("2006-01-02", dateString)
-		if err != nil {
-			log.Warn().Err(err).Msgf("Could not parse date for %v, using current time", path)
-			date = time.Now()
-		}
-	}
-
-	// Parse header image
-	image := utils.GetMapStringValue(metadata, "Image")
-	if image != "" && strings.HasPrefix(image, "/") {
-		image = fmt.Sprintf("%v%v", viper.GetString("base_url"), image)
-	}
-
-	// Fill article Data
-	article = models.Article{
-		Date:     date,
-		Draft:    draft,
-		Image:    image,
-		Title:    utils.GetMapStringValue(metadata, "Title"),
-		Author:   utils.GetMapStringValue(metadata, "Author"),
-		Summary:  utils.GetMapStringValue(metadata, "Summary"),
-		Layout:   utils.GetMapStringValue(metadata, "Layout"),
-		NostrUrl: utils.GetMapStringValue(metadata, "NostrUrl"),
-	}
-
-	if tags, ok := metadata["Tags"].([]interface{}); ok {
-		for _, tag := range tags {
-			if strTag, ok := tag.(string); ok {
-				article.Tags = append(article.Tags, strTag)
-			} else {
-				log.Warn().Msgf("Could not parse tag %v for %v", tag, path)
-			}
-		}
+	article := models.Article{
+		Draft:   parseBoolField(metadata, "Draft", false),
+		Nostr:   parseBoolField(metadata, "Nostr", true),
+		Date:    parseDateField(metadata, path),
+		Image:   parseImageField(metadata),
+		Title:   utils.GetMapStringValue(metadata, "Title"),
+		Author:  utils.GetMapStringValue(metadata, "Author"),
+		Summary: utils.GetMapStringValue(metadata, "Summary"),
+		Layout:  utils.GetMapStringValue(metadata, "Layout"),
+		Tags:    parseTagsField(metadata, path),
+		Slug:    slug,
 	}
 
 	if parseContent {
 		html, md, err := GetArticleContent(path)
 		if err != nil {
-			return models.Article{}, err
+			return models.Article{}, fmt.Errorf("failed to get article content: %w", err)
 		}
-
 		article.Html = html
 		article.Md = md
 	}
 
-	article.Slug = slug
-
 	return article, nil
 }
 
-// Parses a .md file and returns the HTML and the raw markdown
+// parseBoolField parses a boolean field from metadata.
+func parseBoolField(metadata map[string]interface{}, key string, defaultNoExist bool) bool {
+	value, exists := metadata[key]
+	if !exists {
+		log.Warn().Msgf("No %s value. Defaulting to %v", key, defaultNoExist)
+		return defaultNoExist
+	}
+
+	switch v := value.(type) {
+	case bool:
+		return v
+	case string:
+		if parsed, err := strconv.ParseBool(v); err == nil {
+			return parsed
+		}
+		log.Warn().Msgf("Could not parse %s value for %v, considering true", key, v)
+	default:
+		log.Warn().Msgf("Could not parse %s value for %v, considering true", key, v)
+	}
+	return true
+}
+
+// parseDateField parses the date field from metadata.
+func parseDateField(metadata map[string]interface{}, path string) time.Time {
+	dateString := utils.GetMapStringValue(metadata, "Date")
+	for _, layout := range []string{"2006-01-02 15:04", "2006-01-02"} {
+		if date, err := time.Parse(layout, dateString); err == nil {
+			return date
+		}
+	}
+	log.Warn().Msgf("Could not parse date for %v, using current time", path)
+	return time.Now()
+}
+
+// parseImageField parses the image field from metadata.
+func parseImageField(metadata map[string]interface{}) string {
+	image := utils.GetMapStringValue(metadata, "Image")
+	if image != "" && strings.HasPrefix(image, "/") {
+		return fmt.Sprintf("%v%v", viper.GetString("base_url"), image)
+	}
+	return image
+}
+
+// parseTagsField parses the tags field from metadata.
+func parseTagsField(metadata map[string]interface{}, path string) []string {
+	var tags []string
+	if tagList, ok := metadata["Tags"].([]interface{}); ok {
+		for _, tag := range tagList {
+			if strTag, ok := tag.(string); ok {
+				tags = append(tags, strTag)
+			} else {
+				log.Warn().Msgf("Could not parse tag %v for %v", tag, path)
+			}
+		}
+	}
+	return tags
+}
+
+// GetArticleContent parses a .md file and returns the HTML and the raw markdown.
 func GetArticleContent(path string) (template.HTML, string, error) {
 	md, err := os.ReadFile(path)
 	if err != nil {
-		return template.HTML(""), "", err
+		return "", "", fmt.Errorf("failed to read file: %w", err)
 	}
-
-	// Remove everything in the yaml metadata block
 
 	var htmlBuf bytes.Buffer
-	err = markdown.Convert(md, &htmlBuf)
-	if err != nil {
-		return template.HTML(""), "", err
+	if err := markdown.Convert(md, &htmlBuf); err != nil {
+		return "", "", fmt.Errorf("failed to convert markdown: %w", err)
 	}
-	html := htmlBuf.Bytes()
-	return template.HTML(html), string(md), nil
+
+	return template.HTML(htmlBuf.String()), string(md), nil
 }

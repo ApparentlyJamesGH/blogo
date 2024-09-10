@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #272822;
+    /* Dark Charcoal */
+    --blogo-primary: #f92672;
+    /* Pink */
+    --blogo-primary-emphasis: #a6e22e;
+    /* Lime Green */
+    --blogo-primary-dark: #75715e;
+    /* Gray Brown */
+    --blogo-primary-light: #fd971f;
+    /* Orange */
+    --blogo-text: #f8f8f2;
+    /* Off White */
+    --blogo-text-select: #49483e;
+    /* Dark Olive */
+    --blogo-text-fade: #ae81ff;
+    /* Soft Violet */
+}

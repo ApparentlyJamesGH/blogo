@@ -1,0 +1,11 @@
+:root {
+    --blogo-background: rgb(26, 26, 28);
+    --blogo-primary: #4d79bf;
+    --blogo-primary-emphasis: #567d98;
+    --blogo-primary-dark: #141626;
+    --blogo-primary-light: #bbbdc4;
+    --blogo-text: #c8c7c1;
+    --blogo-text-select: #353839;
+    --blogo-text-fade: rgb(81, 81, 87);
+    --blogo-text-title: rgb(206, 205, 195);
+}

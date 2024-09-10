@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #282a36;
+    /* Dark Slate */
+    --blogo-primary: #bd93f9;
+    /* Soft Purple */
+    --blogo-primary-emphasis: #ff79c6;
+    /* Pink */
+    --blogo-primary-dark: #6272a4;
+    /* Desaturated Blue */
+    --blogo-primary-light: #8be9fd;
+    /* Cyan */
+    --blogo-text: #f8f8f2;
+    /* Off White */
+    --blogo-text-select: #44475a;
+    /* Dark Gray */
+    --blogo-text-fade: #6272a4;
+    /* Desaturated Blue */
+}

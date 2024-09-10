@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #faf3e0;
+    /* Light Cream */
+    --blogo-primary: #93c572;
+    /* Pistachio Green */
+    --blogo-primary-emphasis: #8fab59;
+    /* Olive Green */
+    --blogo-primary-dark: #6c8a3e;
+    /* Dark Olive Green */
+    --blogo-primary-light: #8bb160;
+    /* Light Green */
+    --blogo-text: #4b583a;
+    /* Dark Pistachio */
+    --blogo-text-select: #6c8a3e;
+    /* Dark Olive Green */
+    --blogo-text-fade: #7aa960;
+    /* Soft Green */
+}

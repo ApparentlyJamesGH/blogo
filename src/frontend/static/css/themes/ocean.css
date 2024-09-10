@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #001f3f;
+    /* Dark Navy Blue */
+    --blogo-primary: #0074D9;
+    /* Bright Blue */
+    --blogo-primary-emphasis: #1E90FF;
+    /* Dodger Blue */
+    --blogo-primary-dark: #004080;
+    /* Dark Blue */
+    --blogo-primary-light: #7FDBFF;
+    /* Sky Blue */
+    --blogo-text: #E1EFFF;
+    /* Very Light Blue */
+    --blogo-text-select: #004080;
+    /* Dark Blue */
+    --blogo-text-fade: #85C1E9;
+    /* Light Sky Blue */
+}

@@ -1,6 +1,7 @@
 package templates
 
 import "github.com/pluja/blogo/internal/articles"
+import "github.com/pluja/blogo/frontend/templates/components"
 
 templ Blog() {
 	@Layout("", "Posts") {
@@ -15,10 +16,7 @@ templ Blog() {
 
             <ul class="space-y-3 md:space-y-2 hover:[&>li>a]:underline w-full mb-4">
                 for _, article := range articles.ArticleList {
-                    <li class="flex flex-col pb-2 border-b border-b-blogo-text-fade sm:flex-row sm:items-start">
-						<span class="text-xs text-blogo-text opacity-60 sm:text-base">{ article.Date.Format("02 Jan, 2006") }</span>
-						<a class="ml-0 capitalize text-primary sm:ml-4" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
-					</li>
+                    @components.ArticleLine(article)
                 }
             </ul>
         </div>

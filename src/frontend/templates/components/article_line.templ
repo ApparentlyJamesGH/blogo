@@ -1,0 +1,12 @@
+package components
+
+import (
+    "github.com/pluja/blogo/internal/models"
+)
+
+templ ArticleLine(article models.Article) {
+    <li class="space-x-6">
+        <span class="font-mono text-blogo-text-fade whitespace-nowrap">{ article.Date.Format("Jan 2006") }</span>
+        <a class="underline capitalize hover:text-primary-emphasis" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
+    </li>
+}

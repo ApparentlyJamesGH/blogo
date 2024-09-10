@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #0a0e21;
+    /* Midnight Blue */
+    --blogo-primary: #9d00ff;
+    /* Vibrant Purple */
+    --blogo-primary-emphasis: #bf40bf;
+    /* Deep Purple */
+    --blogo-primary-dark: #4b0082;
+    /* Indigo */
+    --blogo-primary-light: #d8bfd8;
+    /* Thistle */
+    --blogo-text: #ebebeb;
+    /* Very Light Gray */
+    --blogo-text-select: #4b0082;
+    /* Indigo */
+    --blogo-text-fade: #836fa9;
+    /* Medium Purple */
+}

@@ -4,7 +4,7 @@ import "github.com/dgraph-io/ristretto"
 
 var Cache *ristretto.Cache
 
-func InitCache() {
+func Init() {
 	var err error
 	Cache, err = ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,     // number of keys to track frequency of (10M).

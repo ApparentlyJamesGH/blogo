@@ -14,17 +14,15 @@ templ Layout(extraHeader, title string) {
 				<title>{ title } | { viper.GetString("title") }</title>
 			}
 			<link rel="stylesheet" href="/static/css/style.css"/>
-			<link rel="stylesheet" href={ "/static/css/" + viper.GetString("theme") + ".css" } />
-			<meta name="htmx-config" content='{"selfRequestsOnly":false}'/>
+			<link rel="stylesheet" href={ "/static/css/themes/" + viper.GetString("theme") + ".css" } />
 			@templ.Raw(extraHeader)
 		</head>
-		<body class="flex flex-col items-center min-h-screen font-mono bg-background text-blogo-text">
-			<main id="content" class="flex-grow max-w-3xl px-4">
+		<body class="flex flex-col items-center min-h-screen font-sans text-base sm:text-lg bg-background text-blogo-text">
+			<main id="content" class="flex-grow max-w-3xl px-4 selection:bg-blogo-text-select">
 				<div class="w-full py-4 mt-4 mb-4 space-y-1">
 					<h1 class="text-2xl font-bold">{ viper.GetString("title") }</h1>
 					<div class="space-x-3 hover:[&>a]:underline hover:[&>a]:text-primary py-1">
 						<a href="/">Home</a>
-						<a href="/blog">Blog</a>
 						<a href="/about">About</a>
 					</div>
 				</div>
@@ -32,14 +30,14 @@ templ Layout(extraHeader, title string) {
 				{ children... }
 			</main>
 
-			<footer class="py-4 mt-auto text-xs text-center text-blogo-text-fade">
+			<footer class="pt-12 pb-8 mt-auto hover:[&_*_a]:text-primary-emphasis text-xs text-center text-blogo-text-fade">
 				<ul class="flex space-x-4">
 					<li><a href="/rss">RSS</a></li>
 					<li><a href="/atom">ATOM</a></li>
 					<li><a href="/json">JSON</a></li>
 				</ul>
 				if viper.GetBool("powered_by_footer") {
-					<p class="mt-1">Powered by <a href="https://github.com/pluja/blogo">blogo</a></p>
+					<p class="mt-1">Powered by <a class="underline" href="https://github.com/pluja/blogo">blogo</a></p>
 				}
 			</footer>
 			//@BaseStyle()

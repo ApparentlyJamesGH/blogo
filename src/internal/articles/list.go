@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/rs/zerolog/log"
@@ -13,14 +14,19 @@ import (
 
 	"github.com/pluja/blogo/internal/cache"
 	"github.com/pluja/blogo/internal/models"
+	"github.com/pluja/blogo/internal/nostr"
 )
 
 var (
-	ArticleMap  sync.Map
-	ArticleList []models.Article
-	TagMap      = make(map[string][]string)
-	mutex       sync.Mutex
+	ArticleMap        sync.Map
+	ArticleList       []models.Article
+	TagMap            = make(map[string][]string)
+	mutex             sync.Mutex
+	nostrPublishTimer *time.Timer
+	nostrPublishMutex sync.Mutex
 )
+
+const nostrPublishDelay = 5 * time.Minute
 
 func WatchArticles() {
 	articles_path := viper.GetString("articles_path")
@@ -76,7 +82,6 @@ func updateArticleMap(articles_path string) {
 	files, err := os.ReadDir(articles_path)
 	if err != nil {
 		log.Error().Err(err).Msg("Error reading directory:")
-
 		return
 	}
 
@@ -112,6 +117,10 @@ func updateArticleMap(articles_path string) {
 	for _, article := range ArticleList {
 		ArticleMap.Store(article.Slug, article)
 	}
+
+	if viper.GetBool("nostr.publish") {
+		scheduleNostrPublish()
+	}
 }
 
 func updateArticle(filename string) {
@@ -133,6 +142,9 @@ func updateArticle(filename string) {
 	}
 
 	updateArticleList()
+	if viper.GetBool("nostr.publish") {
+		scheduleNostrPublish()
+	}
 }
 
 func removeArticle(filename string) {
@@ -146,6 +158,10 @@ func removeArticle(filename string) {
 	}
 	ArticleMap.Delete(articleSlug)
 	updateArticleMap(viper.GetString("articles_path"))
+
+	if viper.GetBool("nostr.publish") {
+		scheduleNostrPublish()
+	}
 }
 
 func updateTagMap(article models.Article) {
@@ -178,4 +194,45 @@ func updateArticleList() {
 	sort.Slice(ArticleList, func(i, j int) bool {
 		return ArticleList[i].Date.After(ArticleList[j].Date)
 	})
+}
+
+func scheduleNostrPublish() {
+	nostrPublishMutex.Lock()
+	defer nostrPublishMutex.Unlock()
+
+	if nostrPublishTimer != nil {
+		nostrPublishTimer.Stop()
+	}
+
+	nostrPublishTimer = time.AfterFunc(nostrPublishDelay, publishBlogToNostr)
+}
+
+func publishBlogToNostr() {
+	nostrPublishMutex.Lock()
+	defer nostrPublishMutex.Unlock()
+
+	log.Debug().Msgf("Publishing blog to nostr...")
+	for _, a := range ArticleList {
+		if _, ok := nostr.NostrPublications[a.Slug]; ok {
+			log.Debug().Msgf("Skip %s, already published", a.Slug)
+			continue
+		}
+
+		if a.Draft || !a.Nostr {
+			log.Debug().Msgf("Skip %s, draft or nostr disabled", a.Slug)
+			continue
+		}
+
+		art, err := GetFromFile(a.Slug, true)
+		if err != nil {
+			log.Error().Err(err).Msg("error!")
+			return
+		}
+
+		err = nostr.PublishArticle(art)
+		if err != nil {
+			log.Error().Err(err).Msg("error!")
+			return
+		}
+	}
 }

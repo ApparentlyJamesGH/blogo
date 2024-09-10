@@ -1,0 +1,18 @@
+:root {
+    --blogo-background: #2c0800;
+    /* Dark Lava */
+    --blogo-primary: #ff4500;
+    /* Lava Red */
+    --blogo-primary-emphasis: #ff6347;
+    /* Tomato */
+    --blogo-primary-dark: #cc3700;
+    /* Dark Orange-Red */
+    --blogo-primary-light: #ff7f50;
+    /* Coral */
+    --blogo-text: #f8f8f2;
+    /* Off White */
+    --blogo-text-select: #cc3700;
+    /* Dark Orange-Red */
+    --blogo-text-fade: #e25822;
+    /* Light Orange-Red */
+}

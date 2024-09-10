@@ -36,24 +36,24 @@ func extraHeaders(article models.Article) string {
 
 templ Article(article models.Article) {
 	@Layout(extraHeaders(article), article.Title) {
-        <h1 class="pt-2 mb-2 text-2xl font-bold text-gray-900 capitalize md:text-3xl text-opacity-90 dark:text-gray-300">{ article.Title }</h1>
+        <h1 class="pt-2 mb-2 text-2xl font-bold capitalize md:text-3xl text-opacity-90 dark:text-gray-300">{ article.Title }</h1>
         
         <div class="text-xs font-medium text-blogo-text-fade">
             <span class="drop-shadow-sm">~{ fmt.Sprintf("%d", utils.ReadTime(article.Md)) } min read</span>
             if article.Author != "" {
-                <span class="drop-shadow-sm">by { article.Author } | { article.Date.Format("2 Jan, 2006") }</span>
+                <span class="drop-shadow-sm">by { article.Author } · { article.Date.Format("2 Jan, 2006") }</span>
             } else {
                 <span>{ article.Date.Format("02 Jan 2006") }</span>
             }
         </div>
 
-        <div class="space-x-2 text-xs hover:[&>a]:text-secondary mb-8 mt-1 text-blogo-text-fade">
+        <div class="space-x-2 text-xs hover:[&>a]:text-prrimary mb-8 mt-1 text-blogo-text-fade">
 			for _, tag := range article.Tags {
 				<a href={templ.SafeURL("/tag/" + tag)}>#{ tag }</a>
 			}
 		</div>
 
-        <article id="markdown" class="pb-12 font-sans prose-lg prose-img:w-full prose-a:break-all sm:prose-xl prose-a:text-secondary prose-headings:text-blogo-title prose-strong:text-secondary-emphasis prose-zinc prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-p:text-blogo-text prose-blockquote:border-secondary prose-blockquote:text-blogo-text">
+        <article id="markdown" class="pb-12 prose-lg prose-img:w-full prose-a:break-all prose-a:underline hover:prose-a:text-primary-emphasis prose-headings:text-blogo-text prose-strong:text-primary-light prose-stone prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-li:list-disc prose-blockquote:border-l-primary-light prose-blockquote:border-l-4 prose-blockquote:italic prose-p:text-blogo-text">
             @templ.Raw(article.Html)
         </article>
     }

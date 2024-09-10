@@ -2,27 +2,34 @@ package templates
 
 import "github.com/pluja/blogo/internal/articles"
 import "github.com/spf13/viper"
+import "github.com/pluja/blogo/frontend/templates/components"
 
 
 templ Index() {
 	@Layout("", "") {
 		if viper.GetString("description") != "" {
-			<p class="max-w-2xl pt-0 mb-8"> { viper.GetString("description") } </p>
+			<p class="max-w-2xl pt-0 mb-6"> { viper.GetString("description") } </p>
 		}
-		<div>
-			<h2 class="w-full mb-4 text-xl font-bold">Latest</h2>
-			<ul class="space-y-3 md:space-y-2 hover:[&>li>a]:underline w-full mb-4">
-				for _, article := range articles.ArticleList[:min(len(articles.ArticleList), 10)] {
-					<li class="flex flex-col pb-2 border-b border-b-blogo-text-fade sm:flex-row sm:items-start">
-						<span class="text-xs text-blogo-text opacity-60 sm:text-base">{ article.Date.Format("02 Jan, 2006") }</span>
-						<a class="ml-0 capitalize text-primary sm:ml-4" href={ templ.SafeURL("/p/" + article.Slug) }>{ article.Title }</a>
-					</li>
-				}
-			</ul>
+		
+		<hr class="my-6 border-blogo-text-fade opacity-20">
 
-			if len(articles.ArticleList) > 10 {
-				<a class="underline text-blogo-text opacity-60 hover:text-primary" href="/blog">Older posts</a>
+		<h2 class="w-full mb-4 text-lg">Latest</h2>
+		<a href={templ.SafeURL("/p/" + articles.ArticleList[0].Slug)} class="block hover:text-primary-emphasis">
+			<h2 class="font-bold text-md">{articles.ArticleList[0].Title} <span class="ml-4 text-xs font-normal opacity-50">{ articles.ArticleList[0].Date.Format("02 Jan 2006") }</span></h2>
+			<p class="text-sm">{ articles.ArticleList[0].Summary }</p>
+		</a>
+
+		<hr class="my-6 border-blogo-text-fade opacity-20">
+
+		<h2 class="w-full mb-4 text-lg">Blog Posts</h2>
+		<ul class="w-full space-y-3 md:space-y-2">
+			for _, article := range articles.ArticleList {
+				@components.ArticleLine(article)
 			}
-		</div>
+		</ul>
+
+			// if len(articles.ArticleList) > 10 {
+			// 	<a class="underline text-blogo-text opacity-60 hover:text-primary" href="/blog">Older posts</a>
+			// }
 	}
 }
