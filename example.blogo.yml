@@ -1,0 +1,26 @@
+title: MY BLOGO BLOG
+description: My blog is awesome because this and that. I hope you like it. Share with your firends.
+keywords:
+  - blog
+  - awesome
+  - personal
+host: blog.example.com
+theme: flexoki
+# timezone: UTC
+
+# Optionally set a code that will be inserted on every page.
+#analytics: <script>console.log('Analytics code goes here')</script>
+
+# Modify the path where the articles are found, by default it is /blogo/articles
+#articles:
+  #path: /home/whoami/PROJECTS/blogo/articles
+
+# Nostr Options
+# Nostr publishing is disabled by default.
+# If no nsec is set, it will generate a random one on startup, and output on the logs.
+# You can set your own list of relays, if not set, it will use a default list.
+#nostr:
+  #publish: true
+  #nsec:
+  #relays: 
+  #  - wss://relay.damus.io
