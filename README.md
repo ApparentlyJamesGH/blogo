@@ -38,7 +38,7 @@ The easiest way to self-host Blogo is by using Docker.
 ```yml
 services:
   blogo:
-    image: pluja/blogo:v2
+    image: pluja/blogo:v3
     container_name: blogo
     restart: unless-stopped
     volumes:
@@ -51,7 +51,7 @@ services:
 2. Get and edit the [config file]():
 
 ```
-wget -o blogo.yml https://github.com/pluja/blogo/....
+wget -o blogo.yml https://github.com/pluja/blogo/blob/v3/example.blogo.yml
 ```
 
 > All blogo.yml variables can be set as environment variables. Check out [Configuration](#configuration) section.
