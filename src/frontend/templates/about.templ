@@ -1,0 +1,24 @@
+package templates
+
+import (
+	"github.com/pluja/blogo/internal/articles"
+	"github.com/spf13/viper"
+)
+
+
+
+templ About() {
+	@Layout(extraHeaders(articles.About), "About") {
+        <h1 class="pt-2 mb-2 text-2xl font-bold capitalize text-opacity-90 md:text-3xl">About</h1>
+        
+        <article id="markdown" 
+                 class="pt-4 pb-12 prose-lg rounded prose-img:w-full prose-a:break-all prose-a:underline prose-headings:text-blogo-text prose-strong:text-primary-light prose-stone prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-li:list-disc prose-blockquote:border-l-primary-light prose-blockquote:border-l-4 prose-blockquote:italic prose-p:text-blogo-text">
+            
+            if articles.About.Html != "" {
+                @templ.Raw(articles.About.Html)
+            } else {
+                <p>Welcome to <strong>{viper.GetString("title")}, a blog made with <a href="https://github.com/pluja/blogo">Blogo</a>!</strong></p>
+            }
+        </article>
+    }
+}

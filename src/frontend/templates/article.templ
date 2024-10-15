@@ -6,10 +6,17 @@ import (
     "strings"
 	"github.com/spf13/viper"
 	"github.com/pluja/blogo/internal/utils"
+	"github.com/pluja/blogo/internal/nostr"
 )
 
 func extraHeaders(article models.Article) string {
-    canonical := fmt.Sprintf("https://%s/p/%s", viper.GetString("base_url"), article.Slug)
+    canonical := utils.CreateURL(viper.GetString("host"), article.Slug)
+
+    image := article.Image
+    if image == "" {
+        image = utils.CreateURL(viper.GetString("host"), "/static/assets/banner.webp")
+    }
+
     extra := `<link rel="stylesheet" type="text/css" href="/static/css/markdown.css">
                 <meta property="og:type" content="article" />
                 <meta name="description" content="%s">
@@ -17,15 +24,20 @@ func extraHeaders(article models.Article) string {
                 <meta name="keywords" content="%s">
                 <meta property="og:title" content="%s" />
                 <meta property="og:url" content="%s" />
-                <link rel="canonical" href="%s" />`
+                <link rel="canonical" href="%s" />
+                <meta property="og:image" content="%s" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:image" content="%s" />`
 
-    extra = fmt.Sprintf(extra, 
-        article.Summary, 
-        article.Summary, 
-        strings.Join(article.Tags, ", "), 
-        article.Title, 
+    extra = fmt.Sprintf(extra,
+        article.Summary,
+        article.Summary,
+        strings.Join(article.Tags, ", "),
+        article.Title,
         canonical,
-        canonical)
+        canonical,
+        image,
+        image)
 
     if article.Draft {
         extra += "\n<meta name=\"robots\" content=\"noindex\">"
@@ -34,9 +46,16 @@ func extraHeaders(article models.Article) string {
     return extra
 }
 
+
+
 templ Article(article models.Article) {
 	@Layout(extraHeaders(article), article.Title) {
-        <h1 class="pt-2 mb-2 text-2xl font-bold capitalize md:text-3xl text-opacity-90 dark:text-gray-300">{ article.Title }</h1>
+        if article.Draft {
+            <span class="block p-1 my-2 font-bold tracking-wide text-center uppercase rounded bg-yellow-600/90 text-black/90">
+                DRAFT
+            </span>
+        }
+        <h1 class="pt-2 mb-2 text-2xl font-bold capitalize text-opacity-90 md:text-3xl">{ article.Title }</h1>
         
         <div class="text-xs font-medium text-blogo-text-fade">
             <span class="drop-shadow-sm">~{ fmt.Sprintf("%d", utils.ReadTime(article.Md)) } min read</span>
@@ -47,13 +66,23 @@ templ Article(article models.Article) {
             }
         </div>
 
-        <div class="space-x-2 text-xs hover:[&>a]:text-prrimary mb-8 mt-1 text-blogo-text-fade">
-			for _, tag := range article.Tags {
-				<a href={templ.SafeURL("/tag/" + tag)}>#{ tag }</a>
-			}
+        <div class="mt-1 space-x-2 text-xs text-blogo-text-fade">
+            if len(article.Tags) > 0 {
+                for _, tag := range article.Tags {
+                <a href={templ.SafeURL("/tag/" + tag)}>#{ tag }</a>
+                }
+            }
+            if viper.GetBool("nostr.publish") {
+                if nostr.NostrPublications[article.Slug] != "" {
+                    <span>·</span>
+                    <a class="underline" href={templ.SafeURL("https://njump.me/" + nostr.NostrPublications[article.Slug])}>Read on Nostr</a>
+                }
+            }
 		</div>
 
-        <article id="markdown" class="pb-12 prose-lg prose-img:w-full prose-a:break-all prose-a:underline hover:prose-a:text-primary-emphasis prose-headings:text-blogo-text prose-strong:text-primary-light prose-stone prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-li:list-disc prose-blockquote:border-l-primary-light prose-blockquote:border-l-4 prose-blockquote:italic prose-p:text-blogo-text">
+        
+        <article id="markdown" 
+                 class="pt-4 pb-12 prose-lg rounded prose-img:w-full prose-a:break-all prose-a:underline prose-headings:text-blogo-text prose-strong:text-primary-light prose-stone prose-blue prose-code:text-base prose-hr:border-blogo-text-fade prose-li:list-disc prose-blockquote:border-l-primary-light prose-blockquote:border-l-4 prose-blockquote:italic prose-p:text-blogo-text">
             @templ.Raw(article.Html)
         </article>
     }

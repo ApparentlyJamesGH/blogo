@@ -13,8 +13,8 @@ templ Index() {
 		
 		<hr class="my-6 border-blogo-text-fade opacity-20">
 
-		<h2 class="w-full mb-4 text-lg">Latest</h2>
-		<a href={templ.SafeURL("/p/" + articles.ArticleList[0].Slug)} class="block hover:text-primary-emphasis">
+		<h2 class="mb-4 text-lg">Latest</h2>
+		<a href={templ.SafeURL("/p/" + articles.ArticleList[0].Slug)} class="block">
 			<h2 class="font-bold text-md">{articles.ArticleList[0].Title} <span class="ml-4 text-xs font-normal opacity-50">{ articles.ArticleList[0].Date.Format("02 Jan 2006") }</span></h2>
 			<p class="text-sm">{ articles.ArticleList[0].Summary }</p>
 		</a>
