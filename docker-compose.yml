@@ -1,0 +1,10 @@
+services:
+  blogo:
+    build: .
+    restart: unless-stopped
+    container_name: blogo
+    ports:
+      - 127.0.0.1:3000:1337
+    volumes:
+      - ./example.blogo.yml:/blogo/blogo.yml
+      - ./articles:/blogo/articles
