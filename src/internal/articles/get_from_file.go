@@ -21,7 +21,7 @@ import (
 
 // GetFromFile retrieves an article from a file and parses its content.
 func GetFromFile(slug string, parseContent bool) (models.Article, error) {
-	articlesPath := viper.GetString("articles_path")
+	articlesPath := viper.GetString("articles.path")
 	path := filepath.Join(articlesPath, slug+".md")
 
 	content, err := os.ReadFile(path)
@@ -57,6 +57,10 @@ func GetFromFile(slug string, parseContent bool) (models.Article, error) {
 			return models.Article{}, fmt.Errorf("failed to get article content: %w", err)
 		}
 		article.Html = html
+		if article.Image != "" {
+			log.Debug().Msgf("Image: %s", article.Image)
+			article.Html = template.HTML(fmt.Sprintf("\n<img src='%s' alt='header image'>\n", template.HTMLEscapeString(article.Image))) + article.Html
+		}
 		article.Md = md
 	}
 
@@ -67,7 +71,7 @@ func GetFromFile(slug string, parseContent bool) (models.Article, error) {
 func parseBoolField(metadata map[string]interface{}, key string, defaultNoExist bool) bool {
 	value, exists := metadata[key]
 	if !exists {
-		log.Warn().Msgf("No %s value. Defaulting to %v", key, defaultNoExist)
+		log.Debug().Msgf("No %s value. Defaulting to %v", key, defaultNoExist)
 		return defaultNoExist
 	}
 
@@ -101,7 +105,7 @@ func parseDateField(metadata map[string]interface{}, path string) time.Time {
 func parseImageField(metadata map[string]interface{}) string {
 	image := utils.GetMapStringValue(metadata, "Image")
 	if image != "" && strings.HasPrefix(image, "/") {
-		return fmt.Sprintf("%v%v", viper.GetString("base_url"), image)
+		return fmt.Sprintf("%v%v", viper.GetString("host"), image)
 	}
 	return image
 }

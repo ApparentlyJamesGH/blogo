@@ -16,7 +16,7 @@ func UpdateFeed() error {
 	now := time.Now()
 	feed = feeds.Feed{
 		Title:       viper.GetString("title"),
-		Link:        &feeds.Link{Href: fmt.Sprintf("%v/rss", viper.GetString("base_url"))},
+		Link:        &feeds.Link{Href: fmt.Sprintf("%v/rss", viper.GetString("host"))},
 		Description: viper.GetString("description"),
 		Author:      &feeds.Author{Name: viper.GetString("title")},
 		Created:     now,
@@ -31,7 +31,7 @@ func getFeedItems() []*feeds.Item {
 		if !article.Draft {
 			item := &feeds.Item{
 				Title:       article.Title,
-				Link:        &feeds.Link{Href: fmt.Sprintf("%v/p/%v", viper.GetString("base_url"), article.Slug)},
+				Link:        &feeds.Link{Href: fmt.Sprintf("%v/p/%v", viper.GetString("host"), article.Slug)},
 				Description: article.Summary,
 				Created:     article.Date,
 			}

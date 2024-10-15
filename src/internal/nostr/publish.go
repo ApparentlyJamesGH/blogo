@@ -60,7 +60,7 @@ func nostrPublish(ad models.Article) (string, error) {
 	}
 
 	// Add the article original URL to the top of the article
-	ad.Md = fmt.Sprintf("> [Read the original blog post](%v)\n\n", utils.CreateURL(viper.GetString("base_url"), "/p/", ad.Slug)) + ad.Md
+	ad.Md = fmt.Sprintf("> [Read the original blog post](%v)\n\n", utils.CreateURL(viper.GetString("host"), "/p/", ad.Slug)) + ad.Md
 
 	id := GetEventId(ad)
 	// Create the Nostr event

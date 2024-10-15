@@ -2,6 +2,7 @@ package server
 
 import (
 	"path"
+	"time"
 
 	"github.com/kataras/iris/v12"
 	"github.com/rs/zerolog/log"
@@ -16,18 +17,19 @@ func StartServer() error {
 
 	r.Use(iris.Compression)
 	//r.Logger().SetLevel("debug")
-	// r.Use(iris.Cache304(24 * 60 * 60))
+	r.Use(iris.StaticCache((365 * 24) * time.Hour))
 
 	serverAddress := utils.Getenv("SERVER_ADDRESS", ":1337")
 
 	// Static routes
 	rootDir := utils.Getenv("ROOT_DIR", "./")
 	r.Favicon(path.Join(rootDir, "/frontend/static", "/assets/favicon.webp"))
-	r.HandleDir("/static", iris.Dir(path.Join(rootDir, "/frontend/static")))
+	r.HandleDir("/static", iris.Dir(path.Join(rootDir, "/frontend/static")), iris.DirOptions{Compress: true})
 
 	// UI Handlers
 	r.Get("/", iris.Component(templates.Index()))
 	r.Get("/blog", iris.Component(templates.Blog()))
+	r.Get("/about", iris.Component(templates.About()))
 	r.Get("/rss", handlers.HandleFeed)
 	r.Get("/atom", handlers.HandleFeed)
 	r.Get("/json", handlers.HandleFeed)

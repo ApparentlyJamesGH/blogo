@@ -24,12 +24,13 @@ var (
 	mutex             sync.Mutex
 	nostrPublishTimer *time.Timer
 	nostrPublishMutex sync.Mutex
+	About             models.Article
 )
 
 const nostrPublishDelay = 5 * time.Minute
 
 func WatchArticles() {
-	articles_path := viper.GetString("articles_path")
+	articles := viper.GetString("articles.path")
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.Fatal().Err(err)
@@ -67,19 +68,19 @@ func WatchArticles() {
 		}
 	}()
 
-	err = watcher.Add(articles_path)
+	err = watcher.Add(articles)
 	if err != nil {
 		log.Error().Err(err).Msg("watcher error")
 	}
 
-	updateArticleMap(articles_path)
+	updateArticleMap(articles)
 	UpdateFeed()
 
 	select {}
 }
 
-func updateArticleMap(articles_path string) {
-	files, err := os.ReadDir(articles_path)
+func updateArticleMap(articles string) {
+	files, err := os.ReadDir(articles)
 	if err != nil {
 		log.Error().Err(err).Msg("Error reading directory:")
 		return
@@ -94,7 +95,14 @@ func updateArticleMap(articles_path string) {
 	for _, file := range files {
 		if strings.HasSuffix(file.Name(), ".md") {
 			filename := strings.TrimSuffix(file.Name(), ".md")
+			cache.Cache.Del(filename)
 			if filename == "about" {
+				log.Debug().Msgf("Loaded %s", filename)
+				About, err = GetFromFile(filename, true)
+				if err != nil {
+					log.Printf("Error reading article %s: %v\n", filename, err)
+					continue
+				}
 				continue
 			}
 			article, err := GetFromFile(filename, false)
@@ -157,7 +165,7 @@ func removeArticle(filename string) {
 		updateTagMapOnRemoval(article)
 	}
 	ArticleMap.Delete(articleSlug)
-	updateArticleMap(viper.GetString("articles_path"))
+	updateArticleMap(viper.GetString("articles.path"))
 
 	if viper.GetBool("nostr.publish") {
 		scheduleNostrPublish()

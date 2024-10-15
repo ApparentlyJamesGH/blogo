@@ -21,14 +21,57 @@ var devMode *bool
 func init() {
 	godotenv.Load()
 	initFlags()
-	initLogger()
+	initLogger(false)
 	loadConfig()
-	articles.InitGoldmark()
-	cache.Init()
-	nostr.Init()
 }
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: blogo <command> [arguments]")
+		os.Exit(1)
+	}
+
+	command := os.Args[1]
+
+	switch command {
+	case "serve":
+		serveCmd := flag.NewFlagSet("serve", flag.ExitOnError)
+		devMode := serveCmd.Bool("dev", false, "activate dev mode")
+		serveCmd.Parse(os.Args[2:])
+		serve(*devMode)
+	case "new":
+		newCmd := flag.NewFlagSet("new", flag.ExitOnError)
+		title := newCmd.String("title", "", "Article title")
+		author := newCmd.String("author", "", "Article author")
+		tags := newCmd.String("tags", "", "Comma-separated list of tags")
+		summary := newCmd.String("summary", "", "Article summary")
+
+		newCmd.Parse(os.Args[2:])
+
+		if newCmd.NArg() < 1 {
+			fmt.Println("Usage: blogo new <slug> [flags]")
+			newCmd.PrintDefaults()
+			os.Exit(1)
+		}
+
+		slug := newCmd.Arg(0)
+		if !articles.ValidateSlug(slug) {
+			fmt.Println("Invalid slug. Use only alphanumeric characters and hyphens.")
+			os.Exit(1)
+		}
+
+		articles.GenerateNewArticle(slug, *title, *author, *tags, *summary)
+	default:
+		fmt.Printf("Unknown command: %s\n", command)
+		os.Exit(1)
+	}
+}
+
+func serve(devMode bool) {
+	initLogger(devMode)
+	articles.InitGoldmark()
+	cache.Init()
+	nostr.Init()
 	go articles.WatchArticles()
 
 	if err := server.StartServer(); err != nil {
@@ -36,8 +79,8 @@ func main() {
 	}
 }
 
-func initLogger() {
-	if *devMode {
+func initLogger(devMode bool) {
+	if devMode {
 		os.Setenv("DEV_MODE", "true")
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout}).With().Caller().Logger()
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
@@ -67,13 +110,13 @@ func loadConfig() {
 
 	// Defaults
 	viper.SetDefault("powered_by_footer", true)
-	viper.SetDefault("title", "Blogo")
-	viper.SetDefault("description", "Welcome to my blogo")
+	viper.SetDefault("title", "Anon Blog")
+	viper.SetDefault("description", fmt.Sprintf("Welcome to %s's blog, enjoy!", viper.GetString("title")))
 	viper.SetDefault("timezone", "UTC")
 	viper.SetDefault("theme", "blogo")
 	viper.SetDefault("nostr.publish", false)
 	viper.SetDefault("nostr.relays", []string{"wss://nostr-pub.wellorder.net", "wss://relay.damus.io", "wss://relay.nostr.band"})
-	viper.SetDefault("articles_path", "/blogo/articles")
+	viper.SetDefault("articles.path", "/blogo/articles")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
