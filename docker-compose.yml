@@ -12,7 +12,7 @@ services:
       BLOGO_TITLE: ZIntex Blog
       BLOGO_DESCRIPTION: Blog for ZIntex news & updates. All of the detailed updates and news is being posted here.
       BLOGO_KEYWORDS: blog,zintex,roblox
-      BLOGO_URL: http://localhost:3000
+      BLOGO_URL: ztx.jrblx.xyz
       #BLOGO_ANALYTICS: '<script defer src="https://my.analytics.site/script.js"></script>'
       TIMEZONE: UTC
 
