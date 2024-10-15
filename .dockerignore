@@ -1,0 +1,8 @@
+node_modules
+templates/*.go
+*.txt
+style.css
+blogo.yml
+Dockerfile
+docker-compose.yml
+example.*
